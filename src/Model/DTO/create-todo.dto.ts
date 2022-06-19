@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import { IsNotEmpty, MaxLength } from 'class-validator';
 
 export class CreateTodoDto {
   @IsNotEmpty()

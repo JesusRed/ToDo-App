@@ -6,23 +6,27 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from '../Model/DTO/create-todo.dto';
 import { TodoStatus } from '../Model/Entity/todo.entity';
 import { TodoStatusValidationPipe } from '../pipes/TodoStatusValidationPipe.pipe';
+import { AuthGuard } from '@nestjs/passport';
+import { UserEntity } from '../Model/Entity/user.entity';
+import { User } from '../auth/user.decorator';
 
 //http://localhost:3000/api/todos
 @Controller('todos')
+@UseGuards(AuthGuard())
 export class TodoController {
   constructor(private todoService: TodoService) {}
 
-  //Http GET verb
   @Get('/list')
-  getAllTodos() {
+  getAllTodos(@User() user: UserEntity) {
     //console.log(this.todoService.getAllTodos());
-    return this.todoService.getAllTodos();
+    return this.todoService.getAllTodos(user);
   }
 
   @Post('/add')

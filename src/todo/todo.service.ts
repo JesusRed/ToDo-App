@@ -1,9 +1,14 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TodoEntity, TodoStatus } from '../Model/Entity/todo.entity';
 import { Repository } from 'typeorm';
 import { CreateTodoDto } from '../Model/DTO/create-todo.dto';
 import * as moment from 'moment';
+import { UserEntity } from '../Model/Entity/user.entity';
 
 @Injectable()
 export class TodoService {
@@ -11,8 +16,15 @@ export class TodoService {
     @InjectRepository(TodoEntity) private repo: Repository<TodoEntity>,
   ) {}
 
-  async getAllTodos() {
-    return await this.repo.find();
+  async getAllTodos(user: UserEntity) {
+    const query = await this.repo.createQueryBuilder('todo');
+    query.where('todo.userId = :userId', { userId: user.id });
+
+    try {
+      await query.getMany();
+    } catch (err) {
+      throw new NotFoundException('No ToDo found');
+    }
   }
 
   async createTodo(createTodoDto: CreateTodoDto) {

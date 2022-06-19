@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from './user.entity';
 
 @Entity('todos')
 export class TodoEntity {
@@ -12,6 +13,10 @@ export class TodoEntity {
   status: TodoStatus;
   @Column()
   dateCreated: string;
+  @ManyToOne(() => UserEntity, (user: UserEntity) => user.todos)
+  user: UserEntity;
+  @Column()
+  userId: number;
 }
 
 export enum TodoStatus {

@@ -1,5 +1,5 @@
-import { Entity } from 'typeorm';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { TodoEntity } from './todo.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -11,4 +11,12 @@ export class UserEntity {
   password: string;
   @Column()
   salt: string;
+  @OneToMany(() => TodoEntity, (todo: TodoEntity) => todo.user)
+  todos: TodoEntity[];
+
+  // async verifyPassword(password: string) {
+  //   const hash = await bcrypt.compare(password, this.salt);
+  //   return hash == this.password;
+  //   return await bcrypt.compare(password, this.password);
+  // }
 }
